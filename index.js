@@ -11,10 +11,11 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const servicesCollection = client.db('ghorer-khabar').collection('servicesCollection');
+        const reviewCollection = client.db('ghorer-khabar').collection('reviewsCollection');
 
         app.get('/services3', async (req, res) => {
             const query = {};
-            const cursor = servicesCollection.find(query).limit(3);
+            const cursor = servicesCollection.find(query).sort({ _id: -1 }).limit(3);
             const services = await cursor.toArray();
             res.send(services);
         })
@@ -31,6 +32,16 @@ async function run() {
             const service = await cursor;
             res.send(service);
         })
+
+        app.get('/reviews/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { services: id };
+            const cursor = reviewCollection.find(query).sort({ _id: -1 });
+            const review = await cursor.toArray();
+            res.send(review);
+        });
+
+
     }
     finally {
 
