@@ -35,11 +35,20 @@ async function run() {
 
         app.get('/reviews/:id', async (req, res) => {
             const id = req.params.id;
-            const query = { services: id };
+            const query = { serviceId: id };
             const cursor = reviewCollection.find(query).sort({ _id: -1 });
             const review = await cursor.toArray();
             res.send(review);
         });
+
+        app.get('/reviews/update/:id', async (req, res) => {
+            const id = req.params.id;
+            console.log(id)
+            const query = { _id: ObjectId(id) };
+            const cursor = reviewCollection.findOne(query);
+            const review = await cursor;
+            res.send(review)
+        })
 
         app.get('/reviews', async (req, res) => {
             let query = {};
